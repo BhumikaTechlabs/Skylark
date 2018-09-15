@@ -13,6 +13,8 @@
     <!-- Bootstrap -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">  
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.css" rel="stylesheet">  
+     <!-- Materialize CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 </head>
 
 <body>
@@ -22,16 +24,98 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>  
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script>
     
+     <!--<nav>
+        <div class="nav-wrapper" style="background: black; color: white; text-align: center">
+            <img src="assets/images/official_logo.png" style="width: 50px; height: 50px; margin-left: 20px; margin-right: 20px"/>
+            <b>AFRICAN CUP OF NATIONS</b>
+         </div>
+      </nav>-->
+    
+    <nav>
+        <div class="nav-wrapper" style="background: black; color: white; text-align: center">
+            <img src="assets/images/official_logo.png" style="width: 50px; height: 50px; margin-left: 20px; margin-right: 20px"/>
+            <b>AFRICAN CUP OF NATIONS</b>
+         </div>
+    </nav>
+
+  <ul id="slide-out" class="sidenav">
+    <li><div class="user-view">
+      <div class="background">
+        <img src="images/office.jpg">
+      </div>
+      <a href="#user"><img class="circle" src="images/yuna.jpg"></a>
+      <a href="#name"><span class="white-text name">John Doe</span></a>
+      <a href="#email"><span class="white-text email">jdandturk@gmail.com</span></a>
+    </div></li>
+    <li><a href="#!"><i class="material-icons">cloud</i>First Link With Icon</a></li>
+    <li><a href="#!">Second Link</a></li>
+    <li><div class="divider"></div></li>
+    <li><a class="subheader">Subheader</a></li>
+    <li><a class="waves-effect" href="#!">Third Link With Waves</a></li>
+  </ul>
+  <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+    
+    <div class="container-fluid">
     <div class="row">
-        <div id='map' class="col-sm-9"></div>
         <div class="col-sm-3">
-            <img src="assets/images/official_logo.png"/>
-            <h2><b>African Cup Of Nations</b></h2>
-            <h3>Select Year</h3>
-            <input type="text" placeholder="Click to show datepicker"  id="year_picker" value="2017">
-            <button id="exploreBtn" onclick="updateMap();">Explore</button>
+            <div>
+                <h5>Select Year</h5>
+                <div class="input-field col s12">
+                    <select id="year_picker" value="2017">
+                      <option value="2017">2017</option>
+                      <option value="2015">2015</option>
+                      <option value="2013">2013</option>
+                      <option value="2012">2012</option>
+                      <option value="2010">2010</option>
+                      <option value="2008">2008</option>
+                      <option value="2006">2006</option>
+                      <option value="2004">2004</option>
+                      <option value="2002">2002</option>
+                    </select>
+                </div>
+                <button id="exploreBtn" onclick="updateMap()" class="waves-effect waves-light btn">Explore</button>
+            </div>
+            <div id="hostContainer">
+                <h5>Host</h5>
+            </div>
+            <div id="championContainer">
+                <h5>Champion</h5>
+            </div>
+            <div id="participantsContainer">
+                <h5>Participants</h5>
+            </div>
+        </div>
+        <div class="col-sm-9">
+            <div id='map'></div>
         </div>
     </div>
+    </div>
+    
+    <footer class="page-footer" style="background: black; color: white">
+          <div class="container">
+            <div class="row">
+              <div class="col l6 s12">
+                <h5 class="white-text">ABOUT</h5>
+                <p class="grey-text text-lighten-4">Developed by Bhumika Saini</p>
+              </div>
+              <div class="col l4 offset-l2 s12">
+                <h5 class="white-text">Links</h5>
+                <ul>
+                  <li><a class="grey-text text-lighten-3" href="#!">Link 1</a></li>
+                  <li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li>
+                  <li><a class="grey-text text-lighten-3" href="#!">Link 3</a></li>
+                  <li><a class="grey-text text-lighten-3" href="#!">Link 4</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="footer-copyright">
+            <div class="container">
+            © 2014 Copyright Text
+            <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
+            </div>
+          </div>
+        </footer>
     
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/5.4.2/firebase.js"></script>
@@ -42,6 +126,8 @@
     <script src="https://unpkg.com/@mapbox/mapbox-sdk/umd/mapbox-sdk.min.js"></script>
     <!-- My JS -->
     <script src="js/main.js"></script>
+    <!-- Materialize CSS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </body>
 
 </html>

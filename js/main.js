@@ -1,13 +1,14 @@
 var map; var feature; var hostMarker;
 var hostName, championName;
+
+
+
+document.getElementById("map").style.height = window.innerHeight + "px";
+
 // When the document is ready
             $(document).ready(function () {
-                
-                $('#year_picker').datepicker({
-                    minViewMode: 'years',
-                    autoclose: true,
-                     format: 'yyyy'
-                });
+                $('.sidenav').sidenav();
+                $('select').formSelect();
                 updateMap();
             });
 
@@ -29,8 +30,20 @@ function updateMap() {
     year = $('#year_picker').val();
         db.ref('/'+year).once('value').then(function(snapshot) {
             hostName = snapshot.val().host;
+            if(Array.isArray(hostName)) {
+                document.getElementById("hostContainer").innerHTML ="<h5>Host</h5>";
+                for(i=1; i<hostName.length; i++)
+                    document.getElementById("hostContainer").innerHTML += "<p>"+hostName[i]+"</p>"
+            }
+            else {
+                document.getElementById("hostContainer").innerHTML ="<h5>Host</h5>";
+                document.getElementById("hostContainer").innerHTML += "<p>"+hostName+"</p>";
+            }
+            console.log(hostName);
             //console.log(hostName);
             championName = snapshot.val().champion;
+            document.getElementById("championContainer").innerHTML ="<h5>Champion</h5>";
+            document.getElementById("championContainer").innerHTML += "<p>"+championName+"</p>";
             //console.log(championName);
             var mapboxClient = mapboxSdk({
                 accessToken: mapboxgl.accessToken
