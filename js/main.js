@@ -1,8 +1,8 @@
 var map;
 var feature;
-var hostMarker;
-var hostName, championName, host_country_code, champion_country_code;
-var temp;
+var hostMarker = [];
+var countryName, countryCode, containerName, containerTitle, countryData;
+var count = 0;
 
 // Get height
 document.getElementById("map").style.height = window.innerHeight + "px";
@@ -12,7 +12,7 @@ $(document).ready(function ()
 {
 	$('.sidenav').sidenav();
 	$('select').formSelect();
-	updateMap();
+	updateUI();
 });
 
 // Firebase DB
@@ -29,109 +29,158 @@ var db = firebase.database();
 
 // Mapbox config
 mapboxgl.accessToken = 'pk.eyJ1IjoibXlyYXNpbmhhIiwiYSI6ImNqbTBvaXEwbzI2dGczd2xpYXI4bTh5ODgifQ.8qZPyKRB1r5ywvK1h6RHnA';
-var count = 0;
 
-$(document).ajaxSuccess(function(){
-    if (!Array.isArray(hostName))
-        hn = hostName;
-    else
-        hn = hostName[temp]
-   document.getElementById("hostContainer").innerHTML += '<img src="flags/4x3/' + host_country_code + '.svg" style="width:40px; height: 25px; display: inline-block; margin-right: 5px;" title="'+hn+'"/>';
-                    console.log(host_country_code);
-    temp++;
-});
-
-function updateMap()
+function updateUI()
 {
-	++count;
 	year = $('#year_picker').val();
 	db.ref('/' + year).once('value').then(function (snapshot)
 	{
 		// ******* Left panel updates *******
+        
         // (1) Host section update
-        hostName = snapshot.val().host;
-		if (Array.isArray(hostName))
+        countryData = snapshot.val().host_code;
+        containerName = "hostContainer";
+        containerTitle = "Host";
+        document.getElementById(containerName).innerHTML = "<h5>"+containerTitle+"</h5>";
+		if (Array.isArray(countryData))
 		{
-            temp = 1;
-			document.getElementById("hostContainer").innerHTML = "<h5>Host</h5>";
-			for (i = 1; i < hostName.length; i++) {
-                console.log("Host "+(i)+" ---> "+hostName[i]);
-                // Get country code for flag
-                $.getJSON('https://restcountries.eu/rest/v2/name/' + hostName[i] + '?fields=alpha2Code', function (data)
-                {
-                    //data is the JSON string
-                    host_country_code = (data[0]['alpha2Code']).toLowerCase();
-                    
-                });
+            for (i = 1; i < countryData.length; i++) {
+                    document.getElementById(containerName).innerHTML += '<img src="flags/4x3/' + countryData[i] + '.svg" style="width:40px; height: 25px; display: inline-block; margin-right: 5px;"/>';
+                    console.log("Host ---> "+countryData[i]);
                 }
-		}
+        }
 		else
 		{
-            console.log("Host ---> "+hostName);
-			// Get country code for flag
-            $.getJSON('https://restcountries.eu/rest/v2/name/' + hostName + '?fields=alpha2Code', function (data)
-			{
-				//data is the JSON string
-				host_country_code = (data[0]['alpha2Code']).toLowerCase();
-                document.getElementById("hostContainer").innerHTML = "<h5>Host</h5>";
-			});
-		}
+            document.getElementById(containerName).innerHTML += '<img src="flags/4x3/' + countryData + '.svg" style="width:40px; height: 25px; display: inline-block; margin-right: 5px;"/>';
+            console.log("Host ---> "+countryData);
+        }
         
 		// (2) Champion section update
-		championName = snapshot.val().champion;
-		document.getElementById("championContainer").innerHTML = "<h5>Champion</h5>";
-		document.getElementById("championContainer").innerHTML += "<p>" + championName + "</p>";
-		console.log("Champion ---> "+championName);
+		countryName = snapshot.val().champion_code;
+        containerName = "championContainer";
+        containerTitle = "Champion";
+		document.getElementById(containerName).innerHTML = "<h5>"+containerTitle+"</h5>";
+        document.getElementById(containerName).innerHTML += '<img src="flags/4x3/' + countryName + '.svg" style="width:40px; height: 25px; display: inline-block; margin-right: 5px;"/>';
+		console.log("Champion ---> "+countryName);
         
         // ******* Map panel update *******
 		var mapboxClient = mapboxSdk(
 		{
 			accessToken: mapboxgl.accessToken
 		});
-		mapboxClient.geocoding.forwardGeocode(
+        
+        // clear the map
+        if (hostMarker.length>0)
+        {
+            for(i=0; i<hostMarker.length; i++)
+                hostMarker[i].remove();
+            hostMarker = [];
+        }
+        
+        // add host markers
+        countryName = snapshot.val().host;
+        if(!Array.isArray(countryName))
+		  updateMap(mapboxClient, countryName);
+        else {
+            for (i=1; i<countryName.length; i++)
+               updateMap(mapboxClient, countryName[i]);
+        }
+        // add champion markers
+        countryName = snapshot.val().champion;
+        if(!Array.isArray(countryName))
+		  updateMap(mapboxClient, countryName);
+        else {
+            for (i=1; i<countryName.length; i++)
+               updateMap(mapboxClient, countryName[i]);
+        }
+        // add participant markers
+        countryName = snapshot.val().host;
+        if(!Array.isArray(countryName))
+		  updateMap(mapboxClient, countryName);
+        else {
+            for (i=1; i<countryName.length; i++)
+               updateMap(mapboxClient, countryName[i]);
+        }
+	});
+}
+
+function updateMap(mapboxClient, country) {
+    mapboxClient.geocoding.forwardGeocode(
 			{
-				query: hostName,
+				query: country,
 				autocomplete: false,
 				limit: 1
 			})
 			.send()
 			.then(function (response)
 			{
-				if (response && response.body && response.body.features && response.body.features.length && count == 1)
+				if (response && response.body && response.body.features && response.body.features.length && count == 0)
 				{
+                    ++count;
 					feature = response.body.features[0];
-
 					map = new mapboxgl.Map(
 					{
 						container: 'map',
-						style: 'mapbox://styles/myrasinha/cjm2fenke8ziq2snxi2e0h9xk',
+						style: 'mapbox://styles/mapbox/dark-v9',
 						center: feature.center,
-						zoom: 7.0,
+						zoom: 3.0,
 						maxBounds: [
 							[-180, -90],
 							[180, 90]
 						]
 					});
+                    
+                    // add geocoder
 					map.addControl(new MapboxGeocoder(
 					{
 						accessToken: mapboxgl.accessToken
 					}));
-					hostMarker = new mapboxgl.Marker()
+                    
+                    // add nav control
+                    map.addControl(new mapboxgl.NavigationControl());
+                    
+                    // add curr loc button
+                    map.addControl(new mapboxgl.GeolocateControl({
+                        positionOptions: {
+                            enableHighAccuracy: true
+                        },
+                        trackUserLocation: true
+                    }));
+                    
+                    // create the popup
+                    var popup = new mapboxgl.Popup({ offset: 25 })
+                        .setText(country);
+
+                    // create DOM element for the marker
+                    var el = document.createElement('div');
+                    el.id = 'marker';
+                    
+					hostMarker.push(new mapboxgl.Marker()
 						.setLngLat(feature.center)
-						.addTo(map);
+                        .setPopup(popup)
+						.addTo(map));
 
 				}
-				else if (response && response.body && response.body.features && response.body.features.length && count > 1)
+				else if (response && response.body && response.body.features && response.body.features.length && count > 0)
 				{
 					feature = response.body.features[0];
-					hostMarker.remove();
-					hostMarker = new mapboxgl.Marker()
-						.setLngLat(feature.center)
-						.addTo(map);
-					map.setCenter(feature.center);
-					
+					//hostMarker.remove();
+					// create the popup
+                    var popup = new mapboxgl.Popup({ offset: 25 })
+                        .setText(country);
 
+                    // create DOM element for the marker
+                    var el = document.createElement('div');
+                    el.id = 'marker';
+                    
+					hostMarker.push(new mapboxgl.Marker()
+						.setLngLat(feature.center)
+                        .setPopup(popup)
+						.addTo(map));
+					
+                    map.flyTo({
+                        center: feature.center
+                    });
 				}
 			});
-	});
 }
