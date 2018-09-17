@@ -2,9 +2,12 @@ var express = require('express');
 var app = express();
 
 // set port
-var port = process.env.PORT || 5000;
+var port = process.env.PORT || 8080
 
-app.use(express.static(__dirname + "/public"));
+app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'html');
+
+app.use(express.static(__dirname));
 
 // routes
 app.get("/", function(req, res) {

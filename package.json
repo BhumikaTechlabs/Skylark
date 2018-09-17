@@ -1,12 +1,15 @@
 {
-    "name": "AFCON",
-    "version": "1.0.0",
-    "scripts": {
-        "start": "node server.js"
-    },
-    "dependencies": {
-        "express": "4.16.3"
-    },
-    "author": "Bhumika Saini",
-    "License": "GPLv3"
+  "name": "AFCON",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.16.3"
+  },
+  "author": "Bhumika Saini",
+  "license": "MIT",
+  "engines": {
+    "node": "4.1.1"
+  }
 }
