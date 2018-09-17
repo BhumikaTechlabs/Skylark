@@ -39,6 +39,7 @@ function updateUI()
 
 		// (1) Host section update
 		countryData = snapshot.val().host_code;
+		cname = snapshot.val().host;
 		containerName = "hostContainer";
 		containerTitle = "Host";
 		document.getElementById(containerName).innerHTML = "<div style='background: #00FF00; width: 20px; height: 20px; display: inline-block; margin-right: 5px'></div><h5 style='display: inline-block'>Host</h5><br/>";
@@ -46,23 +47,51 @@ function updateUI()
 		{
 			for (i = 1; i < countryData.length; i++)
 			{
-				document.getElementById(containerName).innerHTML += '<img src="flags/4x3/' + countryData[i] + '.svg" style="width:40px; height: 25px; display: inline-block; margin-right: 5px;"/>';
+				document.getElementById(containerName).innerHTML += '<img src="flags/4x3/' + countryData[i] + '.svg" style="width:40px; height: 25px; display: inline-block; margin-right: 5px;" title="'+cname[i]+'"/>';
 				console.log("Host ---> " + countryData[i]);
 			}
 		}
 		else
 		{
-			document.getElementById(containerName).innerHTML += '<img src="flags/4x3/' + countryData + '.svg" style="width:40px; height: 25px; display: inline-block; margin-right: 5px;"/>';
+			document.getElementById(containerName).innerHTML += '<img src="flags/4x3/' + countryData + '.svg" style="width:40px; height: 25px; display: inline-block; margin-right: 5px;" title="'+cname+'"/>';
 			console.log("Host ---> " + countryData);
 		}
 
 		// (2) Champion section update
 		countryName = snapshot.val().champion_code;
+		cname = snapshot.val().champion;
 		containerName = "championContainer";
 		containerTitle = "Champion";
 		document.getElementById(containerName).innerHTML = "<div style='background: #FF0000; width: 20px; height: 20px; display: inline-block; margin-right: 5px'></div><h5 style='display: inline-block'>Champion</h5><br/>";
-		document.getElementById(containerName).innerHTML += '<img src="flags/4x3/' + countryName + '.svg" style="width:40px; height: 25px; display: inline-block; margin-right: 5px;"/>';
+		document.getElementById(containerName).innerHTML += '<img src="flags/4x3/' + countryName + '.svg" style="width:40px; height: 25px; display: inline-block; margin-right: 5px;" title="'+cname+'"/>';
 		console.log("Champion ---> " + countryName);
+
+		// (3) Debutant section update
+		countryData = snapshot.val().debutant_code;
+		cname = snapshot.val().debutant;
+		containerName = "debutantContainer";
+		containerTitle = "Debutant";
+		if(countryData!=null)
+		{
+		document.getElementById(containerName).innerHTML = "<div style='background: #0000FF; width: 20px; height: 20px; display: inline-block; margin-right: 5px'></div><h5 style='display: inline-block'>Debutant</h5><br/>";
+		if (Array.isArray(countryData))
+		{
+			for (i = 1; i < countryData.length; i++)
+			{
+				document.getElementById(containerName).innerHTML += '<img src="flags/4x3/' + countryData[i] + '.svg" style="width:40px; height: 25px; display: inline-block; margin-right: 5px;" title="'+cname[i]+'"/>';
+				console.log("Host ---> " + countryData[i]);
+			}
+		}
+		else
+		{
+			document.getElementById(containerName).innerHTML += '<img src="flags/4x3/' + countryData + '.svg" style="width:40px; height: 25px; display: inline-block; margin-right: 5px;" title="'+cname+'"/>';
+			console.log("Host ---> " + countryData);
+		}
+		}
+		else
+		{
+			document.getElementById(containerName).innerHTML = "<div style='background: #0000FF; width: 20px; height: 20px; display: inline-block; margin-right: 5px'></div><h5 style='display: inline-block'>Debutant</h5><br/><p style='font-size: 20px'>None</p>";
+		}
 
 		// ******* Map panel update *******
 		var mapboxClient = mapboxSdk(
@@ -96,11 +125,11 @@ function updateUI()
 			for (i = 1; i < countryName.length; i++)
 				updateMap(mapboxClient, countryName[i], 255, 0, 0);
 		}
-		// add participant markers
-		countryName = snapshot.val().participant;
-		if (!Array.isArray(countryName))
+		// add debutant markers
+		countryName = snapshot.val().debutant;
+		if (!Array.isArray(countryName) && countryName != null)
 			updateMap(mapboxClient, countryName, 0, 0, 255);
-		else
+		else if(Array.isArray(countryName))
 		{
 			for (i = 1; i < countryName.length; i++)
 				updateMap(mapboxClient, countryName[i], 0, 0, 255);
@@ -132,7 +161,8 @@ function updateMap(mapboxClient, country, r, g, b)
 					maxBounds: [
 						[-180, -90],
 						[180, 90]
-					]
+					],
+					attributionControl: false
 				});
 
 				// add geocoder
