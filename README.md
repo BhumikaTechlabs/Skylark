@@ -1,9 +1,6 @@
 <h1>Skylark</h1>
 <hr>
 
-<h3>ABOUT</h3>
-Technical Assignment for <a href="https://www.skylarkdrones.com/">Skylark Drones Pvt. Ltd.</a>
-
 <h3>TOPIC</h3> 
 African Cup of Nations Data Visualization
 
